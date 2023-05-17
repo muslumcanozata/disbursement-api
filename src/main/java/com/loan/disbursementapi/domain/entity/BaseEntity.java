@@ -4,26 +4,25 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @MappedSuperclass
 public class BaseEntity {
     @Column(name = "UPDATED_AT")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
     @Column(name = "CREATED_AT")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @PrePersist
     public void prePersist() {
-        setCreatedAt(Timestamp.from(Instant.now()));
-        setUpdatedAt(Timestamp.from(Instant.now()));
+        setCreatedAt(LocalDateTime.now());
+        setUpdatedAt(LocalDateTime.now());
     }
 
     @PreUpdate
     public void preUpdate() {
-        setUpdatedAt(Timestamp.from(Instant.now()));
+        setUpdatedAt(LocalDateTime.now());
     }
 }

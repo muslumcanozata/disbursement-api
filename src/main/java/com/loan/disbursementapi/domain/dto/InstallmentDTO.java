@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -13,4 +14,5 @@ public class InstallmentDTO extends BaseDTO{
     private BigDecimal amount;
     private CreditDTO credit;
     private Integer status;
+    private LocalDateTime dueDate;
 }
