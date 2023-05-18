@@ -1,0 +1,25 @@
+spring:
+  profiles:
+    active: development
+  application:
+    name: disbursement-api
+  datasource:
+    url: jdbc:postgresql://88.198.118.142:5432/disbursement
+    username: admin
+    password: Password1
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: true
+  sql:
+    init:
+      platform: postgres
+      mode: always
+      continue-on-error: true
+server:
+  port: 8087
