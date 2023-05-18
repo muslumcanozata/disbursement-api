@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +46,10 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
-    public List<CreditDTO> getAllByUserIdWithPageable(Integer userId, Pageable pageable) {
+    public List<CreditDTO> getAllByUserIdAndStatusAndDateWithPageable(Integer userId, CreditStatus status, LocalDateTime createdAt, Pageable pageable) {
         User user = userService.getUser(userId);
         if(user != null) {
-            List<Credit> credits = creditRepository.findAllByUser(user, pageable);
+            List<Credit> credits = creditRepository.findAllByUserAndStatusAndCreatedAt(user, status, createdAt, pageable);
             return modelMapper.map(credits, new TypeToken<List<CreditDTO>>() {}.getType());
         }
         return new ArrayList<>();
