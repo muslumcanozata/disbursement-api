@@ -40,11 +40,9 @@ pipeline{
             agent any
             steps{
                 script{
-                    withCredentials([usernamePassword(credentialsId: 'nexus-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh '''
-                            docker build -t ${CONTAINER_NAME} .
-                        '''
-                    }
+                    sh '''
+                        docker build -t ${CONTAINER_NAME} .
+                    '''
                 }
             }
         }
@@ -52,11 +50,9 @@ pipeline{
             agent any
             steps{
                 script{
-                    withCredentials([usernamePassword(credentialsId: 'nexus-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh '''
-                            docker run -d -p 8087:8087 ${CONTAINER_NAME}
-                        '''
-                    }
+                    sh '''
+                        docker run -d -p 8087:8087 ${CONTAINER_NAME}
+                    '''
                 }
             }
         }
