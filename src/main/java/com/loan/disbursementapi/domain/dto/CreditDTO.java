@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class CreditDTO {
+public class CreditDTO extends BaseDTO{
     private Integer id;
     private Integer status;
     private BigDecimal amount;
