@@ -19,10 +19,9 @@ public class User extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = -8917259933378580958L;
     @Id
-    @SequenceGenerator(name = "USERS_SEQ", sequenceName = "COMMON_SEQUENCE")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_SEQ")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", updatable = false, nullable = false)
-    private Integer id;
+    private int id;
     @Column(name = "FIRST_NAME")
     private String firstName;
     @Column(name = "LAST_NAME")

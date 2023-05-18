@@ -1,6 +1,7 @@
 package com.loan.disbursementapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.loan.disbursementapi.domain.enums.InstallmentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,13 +9,14 @@ import lombok.Setter;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 @Getter
 @Setter
 @Entity
 @Table(name = "INSTALLMENTS")
-public class Installments extends BaseEntity implements Serializable {
+public class Installment extends BaseEntity implements Serializable {
     @Serial
     private static final long serialVersionUID = -8917259933378580978L;
     @Id
@@ -24,10 +26,12 @@ public class Installments extends BaseEntity implements Serializable {
     private Integer id;
     @Column(name="AMOUNT", columnDefinition="Decimal(10,2)", precision = 10, scale = 2)
     private BigDecimal amount;
+    @Column(name="DUE_DATE")
+    private LocalDateTime dueDate;
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private Credit credit;
     @Column(name = "STATUS")
-    private Integer status;
+    private InstallmentStatus status;
 }
