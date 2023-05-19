@@ -4,6 +4,7 @@ pipeline{
         IMAGE_NAME = 'disbursement-api'
         VERSION = '0.0.1-SNAPSHOT'
         CONTAINER_NAME = 'disbursement-api:0.0.1-SNAPSHOT'
+        DOCKER-HUB_USERNAME = 'muslumcanozata'
     }
     stages{
         stage("Build Project") {
@@ -42,6 +43,7 @@ pipeline{
                 script{
                     sh '''
                         docker build -t ${CONTAINER_NAME} .
+                        docker push ${DOCKER-HUB_USERNAME}/${CONTAINER_NAME}
                     '''
                 }
             }
