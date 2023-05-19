@@ -42,7 +42,7 @@ pipeline{
             steps{
                 script{
                     sh '''
-                        docker build -t ${CONTAINER_NAME} .
+                        docker build -t ${DOCKERHUB_USERNAME}/${CONTAINER_NAME} .
                         docker push ${DOCKERHUB_USERNAME}/${CONTAINER_NAME}
                     '''
                 }
@@ -53,7 +53,7 @@ pipeline{
             steps{
                 script{
                     sh '''
-                        docker run -d -p 8087:8087 ${CONTAINER_NAME}
+                        docker run -d -p 8087:8087 ${DOCKERHUB_USERNAME}/${CONTAINER_NAME}
                     '''
                 }
             }
