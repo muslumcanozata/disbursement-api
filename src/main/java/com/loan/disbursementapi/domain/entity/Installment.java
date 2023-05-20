@@ -28,6 +28,8 @@ public class Installment extends BaseEntity implements Serializable {
     private BigDecimal amount;
     @Column(name="DUE_DATE")
     private LocalDateTime dueDate;
+    @Column(name="IS_LAST")
+    private boolean isLast;
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")

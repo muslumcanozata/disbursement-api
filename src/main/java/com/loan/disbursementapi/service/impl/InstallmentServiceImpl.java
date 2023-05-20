@@ -32,20 +32,21 @@ public class InstallmentServiceImpl implements InstallmentService {
         BigDecimal totalInsertedInstallmentAmount = BigDecimal.ZERO;
         List<Installment> installments = new ArrayList<>();
         for (int i=0;i<credit.getInstallmentCount()-1;i++) {
-            addInstallment(installments, credit, installmentAmount);
+            addInstallment(installments, credit, installmentAmount, false);
             totalInsertedInstallmentAmount = totalInsertedInstallmentAmount.add(installmentAmount);
         }
         BigDecimal lastInstallmentAmount = credit.getAmount().subtract(totalInsertedInstallmentAmount);
-        addInstallment(installments, credit, lastInstallmentAmount);
+        addInstallment(installments, credit, lastInstallmentAmount, true);
         return insertInstallments(installments);
     }
 
-    private void addInstallment(List<Installment> installments, Credit credit, BigDecimal installmentAmount) {
+    private void addInstallment(List<Installment> installments, Credit credit, BigDecimal installmentAmount, boolean isLast) {
         Installment installment = new Installment();
         installment.setAmount(installmentAmount);
         installment.setCredit(credit);
         installment.setDueDate(getValidDueDateOfInstallment(LocalDateTime.now(), installments.size()+1));
         installment.setStatus(InstallmentStatus.PENDING);
+        installment.setLast(isLast);
         installments.add(installment);
     }
 
@@ -70,5 +71,20 @@ public class InstallmentServiceImpl implements InstallmentService {
             return modelMapper.map(repository.saveAll(installments), new TypeToken<List<InstallmentDTO>>() {}.getType());
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public Installment getInstallmentById(Integer id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public InstallmentDTO update(Installment installment) {
+        return modelMapper.map(repository.save(installment), InstallmentDTO.class);
+    }
+
+    @Override
+    public List<Installment> getAllOpenInstallmentsByCreditId(Integer creditId) {
+        return repository.findAllByCreditIdAndStatus(creditId, InstallmentStatus.PAID);
     }
 }

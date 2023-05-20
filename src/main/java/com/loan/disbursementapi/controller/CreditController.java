@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -29,4 +30,8 @@ public class CreditController {
         return new ResponseEntity<>(creditService.getAllByUserIdAndStatusAndDateWithPageable(userId, status, createdAt, pageable), HttpStatus.OK);
     }
 
+    @GetMapping("/check")
+    public ResponseEntity<List<CreditDTO>> checkAndUpdateCreditStatus() {
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+    }
 }

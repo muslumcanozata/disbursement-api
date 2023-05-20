@@ -13,6 +13,7 @@ public class InstallmentDTO extends BaseDTO{
     private Integer id;
     private BigDecimal amount;
     private CreditDTO credit;
+    private boolean isLast;
     private Integer status;
     private LocalDateTime dueDate;
 }

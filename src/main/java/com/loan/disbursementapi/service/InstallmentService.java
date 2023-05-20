@@ -10,4 +10,10 @@ public interface InstallmentService {
     List<InstallmentDTO> initializeInstallments(Credit credit);
 
     List<InstallmentDTO> insertInstallments(List<Installment> installments);
+
+    Installment getInstallmentById(Integer id);
+
+    InstallmentDTO update(Installment installment);
+
+    List<Installment> getAllOpenInstallmentsByCreditId(Integer creditId);
 }

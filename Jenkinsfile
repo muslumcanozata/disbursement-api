@@ -56,7 +56,7 @@ pipeline{
             steps{
                 script{
                     sh '''
-                        docker run -d -p 8087:8087 ${DOCKERHUB_USERNAME}/${CONTAINER_NAME}
+                        docker run -d -p 8087:8087 ${CONTAINER_NAME}
                     '''
                 }
             }

@@ -16,4 +16,6 @@ public interface CreditService {
     List<CreditDTO> getAllByUserId(Integer userId);
 
     List<CreditDTO> getAllByUserIdAndStatusAndDateWithPageable(Integer userId, CreditStatus status, LocalDateTime date, Pageable pageable);
+
+    void closeCredit(Integer creditId);
 }
