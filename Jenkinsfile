@@ -4,6 +4,7 @@ pipeline{
         IMAGE_NAME = 'disbursement-api'
         VERSION = '0.0.1-SNAPSHOT'
         CONTAINER_NAME = 'disbursement-api:0.0.1-SNAPSHOT'
+        DOCKERHUB_USERNAME = 'muslumcanozata'
     }
     stages{
         stage("Build Project") {
@@ -40,9 +41,13 @@ pipeline{
             agent any
             steps{
                 script{
-                    sh '''
-                        docker build -t ${CONTAINER_NAME} .
-                    '''
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-mco', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh '''
+                            docker build -t ${DOCKERHUB_USERNAME}/${CONTAINER_NAME} .
+                            docker login -u $USERNAME -p $PASSWORD
+                            docker push ${DOCKERHUB_USERNAME}/${CONTAINER_NAME}
+                        '''
+                    }
                 }
             }
         }
