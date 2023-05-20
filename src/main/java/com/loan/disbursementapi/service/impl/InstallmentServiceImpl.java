@@ -1,6 +1,7 @@
 package com.loan.disbursementapi.service.impl;
 
 import com.loan.disbursementapi.dao.InstallmentRepository;
+import com.loan.disbursementapi.domain.constant.Constants;
 import com.loan.disbursementapi.domain.dto.InstallmentDTO;
 import com.loan.disbursementapi.domain.entity.Credit;
 import com.loan.disbursementapi.domain.entity.Installment;
@@ -9,13 +10,14 @@ import com.loan.disbursementapi.service.InstallmentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,19 +46,19 @@ public class InstallmentServiceImpl implements InstallmentService {
         Installment installment = new Installment();
         installment.setAmount(installmentAmount);
         installment.setCredit(credit);
-        installment.setDueDate(getValidDueDateOfInstallment(LocalDateTime.now(), installments.size()+1));
+        installment.setDueDate(getValidDueDateOfInstallment(LocalDate.now(), installments.size()+1));
         installment.setStatus(InstallmentStatus.PENDING);
         installment.setLast(isLast);
         installments.add(installment);
     }
 
-    private LocalDateTime getValidDueDateOfInstallment(LocalDateTime date, int installmentNumber) {
+    private LocalDate getValidDueDateOfInstallment(LocalDate date, int installmentNumber) {
         date = date.plusDays(installmentNumber * 30L);
         DayOfWeek day = DayOfWeek.of(date.get(ChronoField.DAY_OF_WEEK));
         if(day == DayOfWeek.SATURDAY) {
-            return date.plusDays(2);
+            return date.plusDays(Constants.TWO);
         } else if( day == DayOfWeek.SUNDAY) {
-            return date.plusDays(1);
+            return date.plusDays(Constants.ONE);
         }
         return date;
     }
@@ -85,6 +87,28 @@ public class InstallmentServiceImpl implements InstallmentService {
 
     @Override
     public List<Installment> getAllOpenInstallmentsByCreditId(Integer creditId) {
-        return repository.findAllByCreditIdAndStatus(creditId, InstallmentStatus.PAID);
+        return repository.findAllByCreditIdAndStatusIsNot(creditId, InstallmentStatus.PAID);
+    }
+
+    @Scheduled(cron = Constants.OVERDUE_CHECK_CRON)
+    @Override
+    public void checkOverdue() {
+        List<Installment> installments = repository.findAllByStatusIsNot(InstallmentStatus.PAID);
+        List<Installment> updatedInstallments = new ArrayList<>();
+        installments.parallelStream().forEach(obj -> checkDueDateAndCalculateInterest(updatedInstallments, obj));
+        repository.saveAll(updatedInstallments);
+    }
+
+    private static void checkDueDateAndCalculateInterest(List<Installment> updatedInstallments, Installment obj) {
+        LocalDate now = LocalDate.now();
+        LocalDate before10days = LocalDate.now().minusDays(10);
+        if(obj.getDueDate().isAfter(now) && obj.getDueDate().isBefore(before10days)) {
+            obj.setStatus(InstallmentStatus.PAYABLE);
+            updatedInstallments.add(obj);
+        } else if(obj.getDueDate().isAfter(now)) {
+            obj.setStatus(InstallmentStatus.DELAYED);
+            obj.setAmount(obj.getAmount().multiply(Constants.INTEREST_RATE).divide(BigDecimal.valueOf(Constants.DAY_ON_ONE_YEAR), RoundingMode.HALF_UP));
+            updatedInstallments.add(obj);
+        }
     }
 }

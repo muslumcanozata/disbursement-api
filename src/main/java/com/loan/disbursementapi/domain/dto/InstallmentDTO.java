@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -15,5 +14,5 @@ public class InstallmentDTO extends BaseDTO{
     private CreditDTO credit;
     private boolean isLast;
     private Integer status;
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
 }

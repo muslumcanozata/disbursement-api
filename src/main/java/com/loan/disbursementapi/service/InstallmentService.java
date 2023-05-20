@@ -16,4 +16,6 @@ public interface InstallmentService {
     InstallmentDTO update(Installment installment);
 
     List<Installment> getAllOpenInstallmentsByCreditId(Integer creditId);
+
+    void checkOverdue();
 }

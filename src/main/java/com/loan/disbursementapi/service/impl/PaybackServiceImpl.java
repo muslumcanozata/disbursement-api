@@ -1,6 +1,7 @@
 package com.loan.disbursementapi.service.impl;
 
 import com.loan.disbursementapi.controller.request.PaybackRequest;
+import com.loan.disbursementapi.domain.constant.Constants;
 import com.loan.disbursementapi.domain.dto.InstallmentDTO;
 import com.loan.disbursementapi.domain.entity.Installment;
 import com.loan.disbursementapi.domain.enums.InstallmentStatus;
@@ -26,11 +27,11 @@ public class PaybackServiceImpl implements PaybackService {
         Installment installment = installmentService.getInstallmentById(paybackRequest.getInstallmentId());
         InstallmentDTO installmentDTO = new InstallmentDTO();
         if(installment != null && InstallmentStatus.isActive(installment.getStatus()) && installment.getAmount() != null) {
-            if(installment.getAmount().compareTo(paybackRequest.getAmount()) == 0) {
+            if(installment.getAmount().compareTo(paybackRequest.getAmount()) == Constants.ZERO) {
                 installment.setAmount(BigDecimal.ZERO);
                 installment.setStatus(InstallmentStatus.PAID);
                 installmentDTO = installmentService.update(installment);
-            } else if(installment.getAmount().compareTo(paybackRequest.getAmount()) == 1) {
+            } else if(installment.getAmount().compareTo(paybackRequest.getAmount()) == Constants.ONE) {
                 installment.setAmount(installment.getAmount().subtract(paybackRequest.getAmount()));
                 installmentDTO = installmentService.update(installment);
             }

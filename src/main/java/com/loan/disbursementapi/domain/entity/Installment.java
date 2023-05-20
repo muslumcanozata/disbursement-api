@@ -9,8 +9,7 @@ import lombok.Setter;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -27,7 +26,7 @@ public class Installment extends BaseEntity implements Serializable {
     @Column(name="AMOUNT", columnDefinition="Decimal(10,2)", precision = 10, scale = 2)
     private BigDecimal amount;
     @Column(name="DUE_DATE")
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
     @Column(name="IS_LAST")
     private boolean isLast;
     @JsonBackReference
