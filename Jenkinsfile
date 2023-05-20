@@ -41,7 +41,7 @@ pipeline{
             agent any
             steps{
                 script{
-                    withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-mco', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh '''
                             docker build -t ${DOCKERHUB_USERNAME}/${CONTAINER_NAME} .
                             docker login -u $USERNAME -p $PASSWORD
