@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -53,5 +54,15 @@ public class CreditServiceImpl implements CreditService {
             return modelMapper.map(credits, new TypeToken<List<CreditDTO>>() {}.getType());
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public void closeCredit(Integer creditId) {
+        Optional<Credit> creditOptional = creditRepository.findById(creditId);
+        if(creditOptional.isPresent()) {
+            Credit credit = creditOptional.get();
+            credit.setStatus(CreditStatus.CLOSED);
+            creditRepository.save(credit);
+        }
     }
 }
