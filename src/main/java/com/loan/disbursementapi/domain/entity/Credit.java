@@ -1,6 +1,7 @@
 package com.loan.disbursementapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.loan.disbursementapi.domain.constant.Constants;
 import com.loan.disbursementapi.domain.enums.CreditStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +27,7 @@ public class Credit extends BaseEntity implements Serializable {
     private Integer id;
     @Column(name = "STATUS")
     private CreditStatus status;
-    @Column(name="AMOUNT", columnDefinition="Decimal(10,2)", precision = 10, scale = 2)
+    @Column(name="AMOUNT", columnDefinition="Decimal(10,2)", precision = Constants.TEN, scale = Constants.TWO)
     private BigDecimal amount;
     @Column(name = "INSTALLMENT_COUNT")
     private int installmentCount;
