@@ -34,8 +34,7 @@ public class PaybackServiceImpl implements PaybackService {
             } else if(installment.getAmount().compareTo(paybackRequest.getAmount()) == Constants.ONE) {
                 installment.setAmount(installment.getAmount().subtract(paybackRequest.getAmount()));
                 installmentDTO = installmentService.update(installment);
-            }
-            if(installment.getCredit() != null) {
+            } if(installment.getCredit() != null) {
                 checkInstallmentsToCloseCredit(installment.getCredit().getId());
             }
         }

@@ -7,7 +7,7 @@ import com.loan.disbursementapi.domain.enums.CreditStatus;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface CreditService {
@@ -15,7 +15,7 @@ public interface CreditService {
 
     List<CreditDTO> getAllByUserId(Integer userId);
 
-    List<CreditDTO> getAllByUserIdAndStatusAndDateWithPageable(Integer userId, CreditStatus status, LocalDateTime date, Pageable pageable);
+    List<CreditDTO> getAllByUserIdAndStatusAndDateWithPageable(Integer userId, CreditStatus status, LocalDate date, Pageable pageable);
 
     void closeCredit(Integer creditId);
 }

@@ -1,6 +1,6 @@
 package com.loan.disbursementapi.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +27,7 @@ public class User extends BaseEntity implements Serializable {
     private String firstName;
     @Column(name = "LAST_NAME")
     private String lastName;
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Credit> credits;
 }

@@ -1,7 +1,7 @@
 package com.loan.disbursementapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.loan.disbursementapi.domain.constant.Constants;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.loan.disbursementapi.domain.enums.CreditStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 
 @Getter
@@ -32,6 +33,9 @@ public class Credit extends BaseEntity implements Serializable {
     @Column(name = "INSTALLMENT_COUNT")
     private int installmentCount;
     @JsonBackReference
+    @OneToMany(mappedBy = "credit", fetch = FetchType.LAZY)
+    private List<Installment> installments;
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;

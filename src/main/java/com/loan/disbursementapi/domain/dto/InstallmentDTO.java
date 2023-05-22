@@ -1,5 +1,6 @@
 package com.loan.disbursementapi.domain.dto;
 
+import com.loan.disbursementapi.domain.enums.InstallmentStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +12,8 @@ import java.time.LocalDate;
 public class InstallmentDTO extends BaseDTO{
     private Integer id;
     private BigDecimal amount;
-    private CreditDTO credit;
+    private CreditDTO creditDTO;
     private boolean isLast;
-    private Integer status;
+    private InstallmentStatus status;
     private LocalDate dueDate;
 }

@@ -5,16 +5,15 @@ import com.loan.disbursementapi.domain.dto.CreditDTO;
 import com.loan.disbursementapi.domain.entity.Credit;
 import com.loan.disbursementapi.domain.entity.User;
 import com.loan.disbursementapi.domain.enums.CreditStatus;
+import com.loan.disbursementapi.mapper.CoreMapper;
 import com.loan.disbursementapi.service.CreditService;
 import com.loan.disbursementapi.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +21,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class CreditServiceImpl implements CreditService {
-    private final ModelMapper modelMapper;
     private final CreditRepository creditRepository;
     private final UserService userService;
+    private final CoreMapper coreMapper;
 
     @Override
     public Credit disburseCredit(int installmentCount, BigDecimal amount, User user) {
@@ -41,17 +40,17 @@ public class CreditServiceImpl implements CreditService {
         User user = userService.getUser(userId);
         if(user != null) {
             List<Credit> credits = creditRepository.findAllByUser(user);
-            return modelMapper.map(credits, new TypeToken<List<CreditDTO>>() {}.getType());
+            return coreMapper.toCreditDTOs(credits);
         }
         return new ArrayList<>();
     }
 
     @Override
-    public List<CreditDTO> getAllByUserIdAndStatusAndDateWithPageable(Integer userId, CreditStatus status, LocalDateTime createdAt, Pageable pageable) {
+    public List<CreditDTO> getAllByUserIdAndStatusAndDateWithPageable(Integer userId, CreditStatus status, LocalDate createdAt, Pageable pageable) {
         User user = userService.getUser(userId);
         if(user != null) {
             List<Credit> credits = creditRepository.findAllByUserAndStatusAndCreatedAt(user, status, createdAt, pageable);
-            return modelMapper.map(credits, new TypeToken<List<CreditDTO>>() {}.getType());
+            return coreMapper.toCreditDTOs(credits);
         }
         return new ArrayList<>();
     }

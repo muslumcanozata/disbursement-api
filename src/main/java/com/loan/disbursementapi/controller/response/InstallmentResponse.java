@@ -4,12 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 public class InstallmentResponse {
     private int id;
-    private LocalDateTime dueDate;
+    private LocalDate dueDate;
     private BigDecimal amount;
 }
