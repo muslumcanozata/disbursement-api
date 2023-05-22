@@ -1,6 +1,6 @@
 package com.loan.disbursementapi.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.loan.disbursementapi.domain.enums.InstallmentStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,9 +29,9 @@ public class Installment extends BaseEntity implements Serializable {
     private LocalDate dueDate;
     @Column(name="IS_LAST")
     private boolean isLast;
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "CREDIT_ID")
     private Credit credit;
     @Column(name = "STATUS")
     private InstallmentStatus status;

@@ -6,10 +6,9 @@ import com.loan.disbursementapi.domain.dto.InstallmentDTO;
 import com.loan.disbursementapi.domain.entity.Credit;
 import com.loan.disbursementapi.domain.entity.Installment;
 import com.loan.disbursementapi.domain.enums.InstallmentStatus;
+import com.loan.disbursementapi.mapper.CoreMapper;
 import com.loan.disbursementapi.service.InstallmentService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -25,8 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class InstallmentServiceImpl implements InstallmentService {
-    private final ModelMapper modelMapper;
     private final InstallmentRepository repository;
+    private final CoreMapper coreMapper;
 
     @Override
     public List<InstallmentDTO> initializeInstallments(Credit credit) {
@@ -70,7 +69,7 @@ public class InstallmentServiceImpl implements InstallmentService {
     @Override
     public List<InstallmentDTO> insertInstallments(List<Installment> installments) {
         if(!CollectionUtils.isEmpty(installments)) {
-            return modelMapper.map(repository.saveAll(installments), new TypeToken<List<InstallmentDTO>>() {}.getType());
+            return coreMapper.toInstallmentDTOs(repository.saveAll(installments));
         }
         return new ArrayList<>();
     }
@@ -82,7 +81,7 @@ public class InstallmentServiceImpl implements InstallmentService {
 
     @Override
     public InstallmentDTO update(Installment installment) {
-        return modelMapper.map(repository.save(installment), InstallmentDTO.class);
+        return coreMapper.toInstallmentDTO(repository.save(installment));
     }
 
     @Override
@@ -102,10 +101,10 @@ public class InstallmentServiceImpl implements InstallmentService {
     private static void checkDueDateAndCalculateInterest(List<Installment> updatedInstallments, Installment obj) {
         LocalDate now = LocalDate.now();
         LocalDate before10days = LocalDate.now().minusDays(10);
-        if(obj.getDueDate().isAfter(now) && obj.getDueDate().isBefore(before10days)) {
+        if(obj.getDueDate().isBefore(now) && obj.getDueDate().isAfter(before10days)) {
             obj.setStatus(InstallmentStatus.PAYABLE);
             updatedInstallments.add(obj);
-        } else if(obj.getDueDate().isAfter(now)) {
+        } else if(obj.getDueDate().isBefore(now)) {
             obj.setStatus(InstallmentStatus.DELAYED);
             obj.setAmount(obj.getAmount().multiply(Constants.INTEREST_RATE).divide(BigDecimal.valueOf(Constants.DAY_ON_ONE_YEAR), RoundingMode.HALF_UP));
             updatedInstallments.add(obj);

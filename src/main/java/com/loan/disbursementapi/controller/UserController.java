@@ -18,12 +18,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/user")
-    public ResponseEntity<UserDTO> insertOne(CreateUserRequest createUserRequest) {
+    public ResponseEntity<UserDTO> insertOne(@RequestBody CreateUserRequest createUserRequest) {
         return new ResponseEntity<>(userService.insertOne(createUserRequest), HttpStatus.CREATED);
     }
 
-    @PostMapping("/users")
-    public ResponseEntity<List<UserDTO>> insertAll(BatchCreateUserRequest batchCreateUserRequest) {
+    @PostMapping
+    public ResponseEntity<List<UserDTO>> insertAll(@RequestBody BatchCreateUserRequest batchCreateUserRequest) {
         return new ResponseEntity<>(userService.insertAll(batchCreateUserRequest.getCreateUserRequests()), HttpStatus.CREATED);
     }
 

@@ -4,25 +4,25 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @MappedSuperclass
 public class BaseEntity {
     @Column(name = "UPDATED_AT")
-    private LocalDateTime updatedAt;
+    private LocalDate updatedAt;
     @Column(name = "CREATED_AT")
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     @PrePersist
     public void prePersist() {
-        setCreatedAt(LocalDateTime.now());
-        setUpdatedAt(LocalDateTime.now());
+        setCreatedAt(LocalDate.now());
+        setUpdatedAt(LocalDate.now());
     }
 
     @PreUpdate
     public void preUpdate() {
-        setUpdatedAt(LocalDateTime.now());
+        setUpdatedAt(LocalDate.now());
     }
 }
