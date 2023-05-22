@@ -27,7 +27,7 @@ public class Credit extends BaseEntity implements Serializable {
     private Integer id;
     @Column(name = "STATUS")
     private CreditStatus status;
-    @Column(name="AMOUNT", columnDefinition="Decimal(10,2)", precision = Constants.TEN, scale = Constants.TWO)
+    @Column(name="AMOUNT", columnDefinition="Decimal(10,2)", precision = 10, scale = 2)
     private BigDecimal amount;
     @Column(name = "INSTALLMENT_COUNT")
     private int installmentCount;
