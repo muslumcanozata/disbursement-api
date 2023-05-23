@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -29,10 +28,5 @@ public class CreditController {
     public ResponseEntity<List<CreditDTO>> getAllByUserId(@PathVariable("user-id") Integer userId, @RequestBody GetCreditsWithPaginationAndFilterRequest request) {
         Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
         return new ResponseEntity<>(creditService.getAllByUserIdAndStatusAndDateWithPageable(userId, request.getStatus(), request.getCreatedAt(), pageable), HttpStatus.OK);
-    }
-
-    @GetMapping("/check")
-    public ResponseEntity<List<CreditDTO>> checkAndUpdateCreditStatus() {
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
     }
 }
