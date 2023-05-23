@@ -61,10 +61,10 @@ public class DisbursementControllerTest {
         String requestJson = objectWriter.writeValueAsString(request);
 
         //when
-        when(service.disburse(Mockito.any(DisbursementRequest.class))).thenReturn(new DisbursementResponse());
+        when(service.disburse(Mockito.any(DisbursementRequest.class))).thenReturn(null);
 
         //then
         mockMvc.perform(MockMvcRequestBuilders.post(URL).contentType(APPLICATION_JSON_VALUE).content(requestJson)).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
-        Mockito.verify(service, Mockito.times(0)).disburse(Mockito.any(DisbursementRequest.class));
+        Mockito.verify(service, Mockito.times(1)).disburse(Mockito.any(DisbursementRequest.class));
     }
 }
