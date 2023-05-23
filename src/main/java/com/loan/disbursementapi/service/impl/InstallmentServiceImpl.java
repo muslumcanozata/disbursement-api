@@ -94,20 +94,22 @@ public class InstallmentServiceImpl implements InstallmentService {
     public void checkOverdue() {
         List<Installment> installments = repository.findAllByStatusIsNot(InstallmentStatus.PAID);
         List<Installment> updatedInstallments = new ArrayList<>();
-        installments.parallelStream().forEach(obj -> checkDueDateAndCalculateInterest(updatedInstallments, obj));
-        repository.saveAll(updatedInstallments);
+        installments.parallelStream().forEach(installment -> checkDueDateAndCalculateInterest(updatedInstallments, installment));
+        if(!CollectionUtils.isEmpty(updatedInstallments)) {
+            repository.saveAll(updatedInstallments);
+        }
     }
 
-    private static void checkDueDateAndCalculateInterest(List<Installment> updatedInstallments, Installment obj) {
+    private static void checkDueDateAndCalculateInterest(List<Installment> updatedInstallments, Installment installment) {
         LocalDate now = LocalDate.now();
         LocalDate before10days = LocalDate.now().minusDays(10);
-        if(obj.getDueDate().isBefore(now) && obj.getDueDate().isAfter(before10days)) {
-            obj.setStatus(InstallmentStatus.PAYABLE);
-            updatedInstallments.add(obj);
-        } else if(obj.getDueDate().isBefore(now)) {
-            obj.setStatus(InstallmentStatus.DELAYED);
-            obj.setAmount(obj.getAmount().multiply(Constants.INTEREST_RATE).divide(BigDecimal.valueOf(Constants.DAY_ON_ONE_YEAR), RoundingMode.HALF_UP));
-            updatedInstallments.add(obj);
+        if(installment.getDueDate().isBefore(now) && installment.getDueDate().isAfter(before10days)) {
+            installment.setStatus(InstallmentStatus.PAYABLE);
+            updatedInstallments.add(installment);
+        } else if(installment.getDueDate().isBefore(now)) {
+            installment.setStatus(InstallmentStatus.DELAYED);
+            installment.setAmount(installment.getAmount().multiply(Constants.INTEREST_RATE).divide(BigDecimal.valueOf(Constants.DAY_ON_ONE_YEAR), RoundingMode.HALF_UP));
+            updatedInstallments.add(installment);
         }
     }
 }
