@@ -1,6 +1,7 @@
 package com.loan.disbursementapi.controller;
 
 import com.loan.disbursementapi.controller.request.GetCreditsWithPaginationAndFilterRequest;
+import com.loan.disbursementapi.domain.constant.Constants;
 import com.loan.disbursementapi.domain.dto.CreditDTO;
 import com.loan.disbursementapi.service.CreditService;
 import jakarta.transaction.Transactional;
@@ -26,7 +27,7 @@ public class CreditController {
 
     @PostMapping("/page/{user-id}")
     public ResponseEntity<List<CreditDTO>> getAllByUserId(@PathVariable("user-id") Integer userId, @RequestBody GetCreditsWithPaginationAndFilterRequest request) {
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Pageable pageable = PageRequest.of(request.getPage()-Constants.ONE, request.getSize());
         return new ResponseEntity<>(creditService.getAllByUserIdAndStatusAndDateWithPageable(userId, request.getStatus(), request.getCreatedAt(), pageable), HttpStatus.OK);
     }
 }

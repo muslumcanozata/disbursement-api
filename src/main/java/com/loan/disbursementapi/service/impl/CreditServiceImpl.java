@@ -49,7 +49,7 @@ public class CreditServiceImpl implements CreditService {
     public List<CreditDTO> getAllByUserIdAndStatusAndDateWithPageable(Integer userId, CreditStatus status, LocalDate createdAt, Pageable pageable) {
         User user = userService.getUser(userId);
         if(user != null) {
-            List<Credit> credits = creditRepository.findAllByUserAndStatusAndCreatedAt(user, status, createdAt, pageable);
+            List<Credit> credits = creditRepository.findAllByUser_IdAndStatusAndCreatedAt(user.getId(), status, createdAt, pageable);
             return coreMapper.toCreditDTOs(credits);
         }
         return new ArrayList<>();
