@@ -26,7 +26,7 @@ public class CreditController {
     }
 
     @PostMapping("/page/{user-id}")
-    public ResponseEntity<List<CreditDTO>> getAllByUserId(@PathVariable("user-id") Integer userId, @RequestBody GetCreditsWithPaginationAndFilterRequest request) {
+    public ResponseEntity<List<CreditDTO>> getAllByUserIdWithPaginationAndFilter(@PathVariable("user-id") Integer userId, @RequestBody GetCreditsWithPaginationAndFilterRequest request) {
         Pageable pageable = PageRequest.of(request.getPage()-Constants.ONE, request.getSize());
         return new ResponseEntity<>(creditService.getAllByUserIdAndStatusAndDateWithPageable(userId, request.getStatus(), request.getCreatedAt(), pageable), HttpStatus.OK);
     }

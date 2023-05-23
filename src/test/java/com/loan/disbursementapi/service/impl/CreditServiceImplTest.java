@@ -120,7 +120,7 @@ public class CreditServiceImplTest {
         //when
         when(userService.getUser(anyInt())).thenReturn(user);
         when(coreMapper.toCreditDTOs(Mockito.any())).thenReturn(Collections.singletonList(creditDTO));
-        when(creditRepository.findAllByUserAndStatusAndCreatedAt(any(User.class), any(CreditStatus.class), any(LocalDate.class), any(Pageable.class))).thenReturn(Collections.singletonList(credit));
+        when(creditRepository.findAllByUser_IdAndStatusAndCreatedAt(anyInt(), any(CreditStatus.class), any(LocalDate.class), any(Pageable.class))).thenReturn(Collections.singletonList(credit));
 
         List<CreditDTO> creditDTOs = service.getAllByUserIdAndStatusAndDateWithPageable(user.getId(), credit.getStatus(), LocalDate.now(), Pageable.unpaged());
 
