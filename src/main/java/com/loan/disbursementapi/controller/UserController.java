@@ -32,7 +32,7 @@ public class UserController {
         return new ResponseEntity<>(userService.getOne(id), HttpStatus.OK);
     }
 
-    @GetMapping("/user")
+    @GetMapping
     public ResponseEntity<List<UserDTO>> getAll() {
         return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
     }

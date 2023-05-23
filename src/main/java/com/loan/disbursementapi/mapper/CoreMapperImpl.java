@@ -30,7 +30,7 @@ public class CoreMapperImpl implements CoreMapper {
     @Override
     public UserDTO toUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
-        userDTO.setId(userDTO.getId());
+        userDTO.setId(user.getId());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setUpdatedAt(user.getUpdatedAt());
@@ -106,7 +106,7 @@ public class CoreMapperImpl implements CoreMapper {
 
     @Override
     public List<InstallmentDTO> toInstallmentDTOs(List<Installment> installments) {
-        return null;
+        return installments.stream().map(this::toInstallmentDTO).collect(Collectors.toList());
     }
 
     @Override

@@ -13,5 +13,5 @@ import java.util.List;
 @Repository
 public interface CreditRepository extends JpaRepository<Credit, Integer> {
     List<Credit> findAllByUser(User user);
-    List<Credit> findAllByUserAndStatusAndCreatedAt(User user, CreditStatus creditStatus, LocalDate createdAt, Pageable pageable);
+    List<Credit> findAllByUser_IdAndStatusAndCreatedAt(Integer userId, CreditStatus creditStatus, LocalDate createdAt, Pageable pageable);
 }

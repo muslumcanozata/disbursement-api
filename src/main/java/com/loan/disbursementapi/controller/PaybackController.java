@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaybackController {
     private final PaybackService paybackService;
 
-    @PatchMapping("/api/payback")
+    @PatchMapping
     public ResponseEntity<InstallmentDTO> payback(PaybackRequest paybackRequest) {
         return new ResponseEntity<>(paybackService.payback(paybackRequest), HttpStatus.NO_CONTENT);
     }

@@ -108,7 +108,7 @@ public class InstallmentServiceImpl implements InstallmentService {
             updatedInstallments.add(installment);
         } else if(installment.getDueDate().isBefore(now)) {
             installment.setStatus(InstallmentStatus.DELAYED);
-            installment.setAmount(installment.getAmount().multiply(Constants.INTEREST_RATE).divide(BigDecimal.valueOf(Constants.DAY_ON_ONE_YEAR), RoundingMode.HALF_UP));
+            installment.setAmount(installment.getAmount().multiply(Constants.INTEREST_RATE).divide(BigDecimal.valueOf(Constants.DAY_ON_ONE_YEAR), RoundingMode.HALF_UP).add(installment.getAmount()));
             updatedInstallments.add(installment);
         }
     }
