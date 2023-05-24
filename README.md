@@ -1,8 +1,8 @@
 # Loan Disbursement and Repayment
 
-- With this project, it is aimed to handle loan disbursement and its repayment operations. It is aimed to insert users, create credits and their installments, repayment and check overdue of installments.
+- With this project, it is aimed to manage loan disbursement and its repayment operations. It is aimed to insert users, create credits and their installments, repayment and check overdue of installments.
 
-- This project has a user controller, to handle crud operations for user entity, a credit controller to list credits by filter, 
+- This project has a user controller, to manage crud operations for user entity, a credit controller to list credits by filter, 
 a disbursement controller to disburse and create credit and its installments, a payback controller to payback credit installments, and there is also a scheduled task to check overdue and recalculate the all installments amounts.
 
 ## Tables Diagram
