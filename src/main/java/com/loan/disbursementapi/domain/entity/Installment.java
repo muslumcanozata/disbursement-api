@@ -31,7 +31,7 @@ public class Installment extends BaseEntity implements Serializable {
     private boolean isLast;
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CREDIT_ID")
+    @JoinColumn(name = "CREDIT_ID", referencedColumnName = "ID")
     private Credit credit;
     @Column(name = "STATUS")
     private InstallmentStatus status;
