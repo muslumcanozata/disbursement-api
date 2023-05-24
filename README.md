@@ -130,7 +130,7 @@ Run the container
 
 You can go to the swagger documentation page by locally or link below
 
-- [Swagger UI Api Documentation Page](http://49.12.188.245:8087/swagger-ui/index.html)
+- [Swagger UI Api Documentation Page](http://49.12.245.188:8087/swagger-ui/index.html)
 
 ## Author
 
