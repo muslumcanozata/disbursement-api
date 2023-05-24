@@ -37,6 +37,6 @@ public class Credit extends BaseEntity implements Serializable {
     private List<Installment> installments;
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     private User user;
 }
