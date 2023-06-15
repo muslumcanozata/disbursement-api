@@ -8,7 +8,6 @@ import com.loan.disbursementapi.domain.enums.InstallmentStatus;
 import com.loan.disbursementapi.service.CreditService;
 import com.loan.disbursementapi.service.InstallmentService;
 import com.loan.disbursementapi.service.PaybackService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ public class PaybackServiceImpl implements PaybackService {
     private final CreditService creditService;
 
     @Override
-    @Transactional
     public InstallmentDTO payback(PaybackRequest paybackRequest) {
         Installment installment = installmentService.getInstallmentById(paybackRequest.getInstallmentId());
         InstallmentDTO installmentDTO = new InstallmentDTO();
