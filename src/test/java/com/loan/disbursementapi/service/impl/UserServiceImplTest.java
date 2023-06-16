@@ -4,8 +4,10 @@ import com.loan.disbursementapi.controller.request.CreateUserRequest;
 import com.loan.disbursementapi.dao.UserRepository;
 import com.loan.disbursementapi.domain.dto.UserDTO;
 import com.loan.disbursementapi.domain.entity.User;
+import com.loan.disbursementapi.exception.custom.UserNotFoundException;
 import com.loan.disbursementapi.mapper.CoreMapper;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -84,6 +86,16 @@ public class UserServiceImplTest {
     }
 
     @Test
+    public void getOne_WhenUserNotFound_ThenThrowError() {
+        //when
+        when(repository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+
+        //then
+        Assertions.assertThrows(UserNotFoundException.class, () -> service.getOne(0));
+        verify(repository, times(1)).findById(Mockito.anyInt());
+    }
+
+    @Test
     public void getAll_ThenReturn() {
         //given
         List<User> users = Instancio.ofList(User.class).size(2).create();
@@ -101,6 +113,16 @@ public class UserServiceImplTest {
     }
 
     @Test
+    public void getAll_WhenUserNotFoundAny_ThenThrowError() {
+        //when
+        when(repository.findAll()).thenReturn(null);
+
+        //then
+        Assertions.assertThrows(UserNotFoundException.class, () -> service.getAll());
+        verify(repository, times(1)).findAll();
+    }
+
+    @Test
     public void getUser_ThenReturn() {
         //given
         User expected = Instancio.create(User.class);
@@ -114,6 +136,17 @@ public class UserServiceImplTest {
         verify(repository, times(1)).findById(Mockito.anyInt());
         then(actual.getId()).isEqualTo(expected.getId());
     }
+
+    @Test
+    public void getUser_WhenUserNotFound_ThenThrowError() {
+        //when
+        when(repository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+
+        //then
+        Assertions.assertThrows(UserNotFoundException.class, () -> service.getUser(0));
+        verify(repository, times(1)).findById(Mockito.anyInt());
+    }
+
 
     @Test
     public void deleteOne_ThenReturnNothing() {

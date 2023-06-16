@@ -6,6 +6,7 @@ import com.loan.disbursementapi.domain.dto.InstallmentDTO;
 import com.loan.disbursementapi.domain.entity.Credit;
 import com.loan.disbursementapi.domain.entity.Installment;
 import com.loan.disbursementapi.domain.enums.InstallmentStatus;
+import com.loan.disbursementapi.exception.custom.InstallmentNotFoundException;
 import com.loan.disbursementapi.mapper.CoreMapper;
 import com.loan.disbursementapi.service.InstallmentService;
 import lombok.RequiredArgsConstructor;
@@ -76,7 +77,7 @@ public class InstallmentServiceImpl implements InstallmentService {
 
     @Override
     public Installment getInstallmentById(Integer id) {
-        return repository.findById(id).orElse(null);
+        return repository.findById(id).orElseThrow(() -> new InstallmentNotFoundException(id));
     }
 
     @Override
@@ -86,13 +87,13 @@ public class InstallmentServiceImpl implements InstallmentService {
 
     @Override
     public List<Installment> getAllOpenInstallmentsByCreditId(Integer creditId) {
-        return repository.findAllByCreditIdAndStatusIsNot(creditId, InstallmentStatus.PAID);
+        return repository.findAllByCreditIdAndStatusIsNot(creditId, InstallmentStatus.PAID).orElseThrow(InstallmentNotFoundException::new);
     }
 
     @Scheduled(cron = Constants.OVERDUE_CHECK_CRON)
     @Override
     public void checkOverdue() {
-        List<Installment> installments = repository.findAllByStatusIsNot(InstallmentStatus.PAID);
+        List<Installment> installments = repository.findAllByStatusIsNot(InstallmentStatus.PAID).orElseThrow(InstallmentNotFoundException::new);
         List<Installment> updatedInstallments = new ArrayList<>();
         installments.parallelStream().forEach(installment -> checkDueDateAndCalculateInterest(updatedInstallments, installment));
         if(!CollectionUtils.isEmpty(updatedInstallments)) {
