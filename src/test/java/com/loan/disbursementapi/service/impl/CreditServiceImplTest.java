@@ -5,9 +5,12 @@ import com.loan.disbursementapi.domain.dto.CreditDTO;
 import com.loan.disbursementapi.domain.entity.Credit;
 import com.loan.disbursementapi.domain.entity.User;
 import com.loan.disbursementapi.domain.enums.CreditStatus;
+import com.loan.disbursementapi.exception.custom.CreditNotFoundException;
+import com.loan.disbursementapi.exception.custom.UserNotFoundException;
 import com.loan.disbursementapi.mapper.CoreMapper;
 import com.loan.disbursementapi.service.UserService;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,17 +64,15 @@ public class CreditServiceImplTest {
     }
 
     @Test
-    public void getAllByUserId_whenUserNotFound_ThenReturnEmptyList() {
+    public void getAllByUserId_whenUserNotFound_ThenThrowError() {
         //given
         Integer id = 0;
 
         //when
-        when(userService.getUser(anyInt())).thenReturn(null);
-
-        List<CreditDTO> creditDTOs = service.getAllByUserId(id);
+        when(userService.getUser(anyInt())).thenThrow(new UserNotFoundException(id));
 
         //then
-        then(CollectionUtils.isEmpty(creditDTOs)).isTrue();
+        Assertions.assertThrows(UserNotFoundException.class, () -> service.getAllByUserId(id));
     }
 
     @Test
@@ -81,10 +81,13 @@ public class CreditServiceImplTest {
         Integer id = 0;
         User user = Instancio.create(User.class);
         CreditDTO creditDTO = Instancio.create(CreditDTO.class);
+        List<Credit> credits = Collections.singletonList(coreMapper.toCredit(creditDTO));
 
         //when
-        when(userService.getUser(anyInt())).thenReturn(user);
+        when(userService.getUser(Mockito.anyInt())).thenReturn(user);
+        when(creditRepository.findAllByUser(Mockito.any(User.class))).thenReturn(Optional.of(credits));
         when(coreMapper.toCreditDTOs(Mockito.any())).thenReturn(Collections.singletonList(creditDTO));
+
         List<CreditDTO> creditDTOs = service.getAllByUserId(id);
 
         //then
@@ -93,18 +96,16 @@ public class CreditServiceImplTest {
     }
 
     @Test
-    public void getAllByUserIdAndStatusAndDateWithPageable_whenUserNotFound_ThenReturnEmptyList() {
+    public void getAllByUserIdAndStatusAndDateWithPageable_whenUserNotFound_ThenThrowError() {
         //given
         Integer id = 0;
         CreditStatus creditStatus = CreditStatus.OPEN;
 
         //when
-        when(userService.getUser(anyInt())).thenReturn(null);
-
-        List<CreditDTO> creditDTOs = service.getAllByUserIdAndStatusAndDateWithPageable(id, creditStatus, LocalDate.now(), Pageable.unpaged());
+        when(userService.getUser(anyInt())).thenThrow(new UserNotFoundException(id));
 
         //then
-        then(CollectionUtils.isEmpty(creditDTOs)).isTrue();
+        Assertions.assertThrows(UserNotFoundException.class, () -> service.getAllByUserIdAndStatusAndDateWithPageable(id, creditStatus, LocalDate.now(), Pageable.unpaged()));
     }
 
     @Test
@@ -120,7 +121,7 @@ public class CreditServiceImplTest {
         //when
         when(userService.getUser(anyInt())).thenReturn(user);
         when(coreMapper.toCreditDTOs(Mockito.any())).thenReturn(Collections.singletonList(creditDTO));
-        when(creditRepository.findAllByUser_IdAndStatusAndCreatedAt(anyInt(), any(CreditStatus.class), any(LocalDate.class), any(Pageable.class))).thenReturn(Collections.singletonList(credit));
+        when(creditRepository.findAllByUser_IdAndStatusAndCreatedAt(anyInt(), any(CreditStatus.class), any(LocalDate.class), any(Pageable.class))).thenReturn(Optional.of(Collections.singletonList(credit)));
 
         List<CreditDTO> creditDTOs = service.getAllByUserIdAndStatusAndDateWithPageable(user.getId(), credit.getStatus(), LocalDate.now(), Pageable.unpaged());
 
@@ -145,16 +146,16 @@ public class CreditServiceImplTest {
     }
 
     @Test
-    public void closeCredit_whenCreditNotFound_ThenDontSaveCredit() {
+    public void closeCredit_whenCreditNotFound_ThenThrowError() {
         //given
         Integer id = 0;
         Optional<Credit> creditOptional = Optional.empty();
+
         //when
         when(creditRepository.findById(any())).thenReturn(creditOptional);
 
-        service.closeCredit(id);
-
         //then
+        Assertions.assertThrows(CreditNotFoundException.class, () -> service.closeCredit(id));
         verify(creditRepository, times(0)).save(any());
     }
 }

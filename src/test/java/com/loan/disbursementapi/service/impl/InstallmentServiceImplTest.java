@@ -98,7 +98,7 @@ public class InstallmentServiceImplTest {
         List<Installment> expected = Instancio.ofList(Installment.class).size(2).create();
 
         //when
-        when(repository.findAllByCreditIdAndStatusIsNot(Mockito.anyInt(), Mockito.any(InstallmentStatus.class))).thenReturn(expected);
+        when(repository.findAllByCreditIdAndStatusIsNot(Mockito.anyInt(), Mockito.any(InstallmentStatus.class))).thenReturn(Optional.of(expected));
 
         List<Installment> actual = service.getAllOpenInstallmentsByCreditId(0);
 
@@ -117,7 +117,7 @@ public class InstallmentServiceImplTest {
         expected.get(1).setDueDate(before20days);
 
         //when
-        when(repository.findAllByStatusIsNot(Mockito.any(InstallmentStatus.class))).thenReturn(expected);
+        when(repository.findAllByStatusIsNot(Mockito.any(InstallmentStatus.class))).thenReturn(Optional.of(expected));
 
         service.checkOverdue();
 

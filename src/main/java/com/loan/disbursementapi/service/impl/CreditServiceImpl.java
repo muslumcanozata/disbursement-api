@@ -5,6 +5,7 @@ import com.loan.disbursementapi.domain.dto.CreditDTO;
 import com.loan.disbursementapi.domain.entity.Credit;
 import com.loan.disbursementapi.domain.entity.User;
 import com.loan.disbursementapi.domain.enums.CreditStatus;
+import com.loan.disbursementapi.exception.custom.CreditNotFoundException;
 import com.loan.disbursementapi.mapper.CoreMapper;
 import com.loan.disbursementapi.service.CreditService;
 import com.loan.disbursementapi.service.UserService;
@@ -14,9 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -38,30 +37,21 @@ public class CreditServiceImpl implements CreditService {
     @Override
     public List<CreditDTO> getAllByUserId(Integer userId) {
         User user = userService.getUser(userId);
-        if(user != null) {
-            List<Credit> credits = creditRepository.findAllByUser(user);
-            return coreMapper.toCreditDTOs(credits);
-        }
-        return new ArrayList<>();
+        List<Credit> credits = creditRepository.findAllByUser(user).orElseThrow(() -> new CreditNotFoundException(userId));
+        return coreMapper.toCreditDTOs(credits);
     }
 
     @Override
     public List<CreditDTO> getAllByUserIdAndStatusAndDateWithPageable(Integer userId, CreditStatus status, LocalDate createdAt, Pageable pageable) {
         User user = userService.getUser(userId);
-        if(user != null) {
-            List<Credit> credits = creditRepository.findAllByUser_IdAndStatusAndCreatedAt(user.getId(), status, createdAt, pageable);
-            return coreMapper.toCreditDTOs(credits);
-        }
-        return new ArrayList<>();
+        List<Credit> credits = creditRepository.findAllByUser_IdAndStatusAndCreatedAt(user.getId(), status, createdAt, pageable).orElseThrow(() -> new CreditNotFoundException(userId));
+        return coreMapper.toCreditDTOs(credits);
     }
 
     @Override
     public void closeCredit(Integer creditId) {
-        Optional<Credit> creditOptional = creditRepository.findById(creditId);
-        if(creditOptional.isPresent()) {
-            Credit credit = creditOptional.get();
-            credit.setStatus(CreditStatus.CLOSED);
-            creditRepository.save(credit);
-        }
+        Credit credit = creditRepository.findById(creditId).orElseThrow(CreditNotFoundException::new);
+        credit.setStatus(CreditStatus.CLOSED);
+        creditRepository.save(credit);
     }
 }
